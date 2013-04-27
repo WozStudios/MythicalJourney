@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Vector2;
  * Date: 4/27/13
  * Time: 3:29 AM
  */
-public class SplashScreen implements Screen {
+public class SplashScreen implements Screen, IDelayable {
 	class SplashTween implements TweenAccessor<Sprite> {
 
 		public static final int ALPHA = 1;
@@ -46,7 +46,10 @@ public class SplashScreen implements Screen {
 					break;
 			}
 		}
+
 	}
+
+	private final MythicalJourneyGame game;
 
 	private Sprite splashSprite;
 	private Texture splashTexture;
@@ -55,7 +58,11 @@ public class SplashScreen implements Screen {
 	private Rectangle viewport;
 	private TextureRegion textureRegion;
 	private TweenManager tweenManager;
+	private Delay pauser;
 
+	public SplashScreen(MythicalJourneyGame game) {
+		this.game = game;
+	}
 
 	@Override
 	public void show() {
@@ -97,6 +104,9 @@ public class SplashScreen implements Screen {
 		camera.position.set((float)1024 / 2, (float)512 / 2, 0);
 
 		tweenManager = new TweenManager();
+
+		pauser = new Delay(this, 6f);
+		pauser.start();
 
 		Tween.registerAccessor(Sprite.class, new SplashTween());
 		Tween.to(splashSprite, SplashTween.ALPHA, 3.0f).target(1.0f)
@@ -158,6 +168,11 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void resume() {
+	}
+
+	@Override
+	public void receiveDelayedEvent() {
+		game.setScreen(new MenuScreen());
 	}
 
 	@Override

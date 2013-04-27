@@ -19,7 +19,7 @@ public class MythicalJourneyGame implements ApplicationListener {
 	public void create() {
 		Gdx.input.setInputProcessor(new UIInputProcessor());
 
-		screen = new SplashScreen();
+		screen = new SplashScreen(this);
 
 		setScreen(screen);
 	}

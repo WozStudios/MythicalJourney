@@ -8,7 +8,7 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "MythicalJourney";
 		cfg.useGL20 = false;
-		cfg.width = 1280;
+		cfg.width = 1270;
 		cfg.height = 720;
 		
 		new LwjglApplication(new MythicalJourneyGame(), cfg);
