@@ -26,8 +26,6 @@ public class MythicalJourneyGame implements ApplicationListener {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (screen != null)
 			screen.render(Gdx.graphics.getDeltaTime());
