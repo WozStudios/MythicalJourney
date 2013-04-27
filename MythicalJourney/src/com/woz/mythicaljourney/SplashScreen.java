@@ -60,6 +60,11 @@ public class SplashScreen implements Screen, IDelayable {
 	private TweenManager tweenManager;
 	private Delay pauser;
 
+	private float fadeInTime;
+	private float sustainTime;
+	private float fadeOutTime;
+	private float totalFadeTime;
+
 	public SplashScreen(MythicalJourneyGame game) {
 		this.game = game;
 	}
@@ -105,14 +110,21 @@ public class SplashScreen implements Screen, IDelayable {
 
 		tweenManager = new TweenManager();
 
-		pauser = new Delay(this, 6f);
+		fadeInTime = 3.0f;
+		sustainTime = 1.5f;
+		fadeOutTime = 2.0f;
+
+		totalFadeTime = fadeInTime + sustainTime + fadeOutTime;
+
+
+		pauser = new Delay(this, totalFadeTime);
 		pauser.start();
 
 		Tween.registerAccessor(Sprite.class, new SplashTween());
-		Tween.to(splashSprite, SplashTween.ALPHA, 3.0f).target(1.0f)
+		Tween.to(splashSprite, SplashTween.ALPHA, fadeInTime).target(1.0f)
 				.ease(TweenEquations.easeInQuad)
 				.start(tweenManager);
-		Tween.to(splashSprite, SplashTween.ALPHA, 2.0f).delay(4.5f).target(0.0f)
+		Tween.to(splashSprite, SplashTween.ALPHA, fadeOutTime).delay(fadeInTime + sustainTime).target(0.0f)
 				.ease(TweenEquations.easeInQuad)
 				.start(tweenManager);
 	}
