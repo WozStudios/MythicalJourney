@@ -30,7 +30,6 @@ public class Delay extends Thread {
 					delayable.receiveDelayedEvent();
 				}
 			});
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -3,23 +3,19 @@ package com.woz.mythicaljourney;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import org.apache.http.protocol.HttpDateGenerator;
+import com.badlogic.gdx.graphics.GL20;
+import com.woz.mythicaljourney.Screens.OrbTestScreen;
+import com.woz.mythicaljourney.input.InputManager;
+import com.woz.mythicaljourney.input.UIInputProcessor;
 
 public class MythicalJourneyGame implements ApplicationListener {
 	private Screen screen;
 	
 	@Override
 	public void create() {
-		Gdx.input.setInputProcessor(new UIInputProcessor());
+		InputManager.setup();
 
-		screen = new SplashScreen(this);
+		screen = new OrbTestScreen(this);
 
 		setScreen(screen);
 	}

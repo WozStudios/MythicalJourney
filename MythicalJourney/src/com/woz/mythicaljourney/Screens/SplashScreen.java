@@ -1,4 +1,4 @@
-package com.woz.mythicaljourney;
+package com.woz.mythicaljourney.Screens;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
@@ -14,6 +14,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.woz.mythicaljourney.Delay;
+import com.woz.mythicaljourney.GameManager;
+import com.woz.mythicaljourney.IDelayable;
+import com.woz.mythicaljourney.MythicalJourneyGame;
 
 /*
  * User: Daniel

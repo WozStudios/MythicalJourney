@@ -1,4 +1,4 @@
-package com.woz.mythicaljourney;
+package com.woz.mythicaljourney.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
