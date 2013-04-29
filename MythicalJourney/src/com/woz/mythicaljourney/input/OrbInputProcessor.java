@@ -1,19 +1,22 @@
 package com.woz.mythicaljourney.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.woz.mythicaljourney.OrbRenderer;
 
 /*
  * User: Daniel
- * Date: 4/27/13
- * Time: 6:30 PM
+ * Date: 4/29/13
+ * Time: 2:59 AM
  */
-public class MusicInputProcessor implements InputProcessor {
+public class OrbInputProcessor implements InputProcessor {
+	private OrbRenderer orbRenderer;
+
+	public OrbInputProcessor() {
+	}
+
 	@Override
 	public boolean keyDown(int keycode) {
-
-
 		return false;
 	}
 
@@ -29,7 +32,11 @@ public class MusicInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
+		if (orbRenderer != null)
+			orbRenderer.spawnOrb(Gdx.input.getX(), Gdx.input.getY());
+
+		Gdx.app.log("Log", "Touched!");
+		return true;
 	}
 
 	@Override
@@ -50,5 +57,9 @@ public class MusicInputProcessor implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public void setOrbRenderer(OrbRenderer orbRenderer) {
+		this.orbRenderer = orbRenderer;
 	}
 }

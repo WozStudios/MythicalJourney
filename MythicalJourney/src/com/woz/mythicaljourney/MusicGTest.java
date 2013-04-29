@@ -25,22 +25,22 @@ public class MusicGTest implements Screen {
 
 	@Override
 	public void render(float delta) {
-		if (InputManager.wasTouched()  && !musicPlaying) {
-			baseLooper.start();
-			secondLooper.start();
-
-			musicPlaying = true;
-			InputManager.setTouched(false);
-		}
-
-		if (InputManager.wasTouchedUp()) {
-			baseLooper.stop();
-			secondLooper.stop();
-
-			musicPlaying = false;
-
-			InputManager.setTouchedUp(false);
-		}
+		//if (InputManager.wasTouched()  && !musicPlaying) {
+		//	baseLooper.start();
+		//	secondLooper.start();
+//
+		//	musicPlaying = true;
+		//	InputManager.setTouched(false);
+		//}
+//
+		//if (InputManager.wasTouchedUp()) {
+		//	baseLooper.stop();
+		//	secondLooper.stop();
+//
+		//	musicPlaying = false;
+//
+		//	InputManager.setTouchedUp(false);
+		//}
 	}
 
 	@Override

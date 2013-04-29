@@ -43,6 +43,13 @@ public class Orb {
 		this.color = color;
 	}
 
+	public void setColor(float r, float g, float b, float a) {
+		color.r = r;
+		color.g = g;
+		color.b = b;
+		color.a = a;
+	}
+
 	public void setAlpha(float alpha) {
 		color.set(color.r, color.g, color.b, alpha);
 	}

@@ -57,6 +57,10 @@ public class MythicalJourneyGame implements ApplicationListener {
 		}
 	}
 
+	public Screen getScreen(Screen screen) {
+		return screen;
+	}
+
 	@Override
 	public void dispose() {
 		if (screen != null)

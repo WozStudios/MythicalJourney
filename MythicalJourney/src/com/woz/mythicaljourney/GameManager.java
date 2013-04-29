@@ -10,5 +10,4 @@ public class GameManager {
 	public static final int VIRTUAL_HEIGHT = 720;
 	public static final float VIRTUAL_ASPECT_RATIO = (float)VIRTUAL_WIDTH / (float)VIRTUAL_HEIGHT;
 
-
 }

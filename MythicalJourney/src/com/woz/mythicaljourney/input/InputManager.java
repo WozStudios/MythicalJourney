@@ -2,6 +2,8 @@ package com.woz.mythicaljourney.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.woz.mythicaljourney.GameManager;
+import com.woz.mythicaljourney.OrbRenderer;
 
 /*
  * User: Daniel
@@ -12,6 +14,7 @@ public class InputManager {
 	private static InputMultiplexer inputMultiplexer;
 	private static UIInputProcessor uiInputProcessor;
 	private static MusicInputProcessor musicInputProcessor;
+	private static OrbInputProcessor orbInputProcessor;
 
 	private static boolean wasTouched = false;
 	private static boolean touchedUp = false;
@@ -19,24 +22,13 @@ public class InputManager {
 	public static void setup() {
 		uiInputProcessor = new UIInputProcessor();
 		musicInputProcessor = new MusicInputProcessor();
-		inputMultiplexer = new InputMultiplexer(uiInputProcessor,  musicInputProcessor);
+		orbInputProcessor = new OrbInputProcessor();
+		inputMultiplexer = new InputMultiplexer(uiInputProcessor,  musicInputProcessor, orbInputProcessor);
 
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
-	public static void setTouched(boolean wasTouched) {
-		InputManager.wasTouched = wasTouched;
-	}
-
-	public static void setTouchedUp(boolean touchedUp) {
-		InputManager.touchedUp = touchedUp;
-	}
-
-	public static boolean wasTouched() {
-		return wasTouched;
-	}
-
-	public static boolean wasTouchedUp() {
-		return touchedUp;
+	public static void setOrbRenderer(OrbRenderer orbRenderer) {
+		orbInputProcessor.setOrbRenderer(orbRenderer);
 	}
 }
