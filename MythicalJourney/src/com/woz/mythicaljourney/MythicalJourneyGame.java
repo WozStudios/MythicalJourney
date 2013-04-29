@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.woz.mythicaljourney.screens.OrbTestScreen;
 import com.woz.mythicaljourney.input.InputManager;
 import com.woz.mythicaljourney.screens.ShapeRendererAlphaTest;
+import com.woz.mythicaljourney.utils.Time;
 
 public class MythicalJourneyGame implements ApplicationListener {
 	private Screen screen;
@@ -21,9 +22,11 @@ public class MythicalJourneyGame implements ApplicationListener {
 
 	@Override
 	public void render() {
+		float delta = Gdx.graphics.getDeltaTime();
+		Time.update(delta);
 
 		if (screen != null)
-			screen.render(Gdx.graphics.getDeltaTime());
+			screen.render(delta);
 	}
 
 	@Override

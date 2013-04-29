@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.woz.mythicaljourney.gameobjects.Orb;
 import com.woz.mythicaljourney.gameobjects.Orb.OrbPart;
 import com.woz.mythicaljourney.gameobjects.OrbListener;
+import com.woz.mythicaljourney.utils.Time;
 
 /*
  * User: Daniel
@@ -36,6 +39,8 @@ public class OrbRenderer implements OrbListener {
 
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private Color backgroundColor;
+	private float backgroundColorSpeed;
 
 	public OrbRenderer(SpriteBatch batch, OrthographicCamera camera) {
 		//this.batch = batch;
@@ -44,13 +49,15 @@ public class OrbRenderer implements OrbListener {
 		this.batch = new SpriteBatch();
 		this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		orbColor = new Color(0.3f, 0.8f, 0.9f, 1.0f);
 		orbs = new Array<Orb>();
+
+		backgroundColor = new Color(0.8f, .8f, 0.6f, 1.0f);
+		backgroundColorSpeed = 1f;
 
 		shapeRenderer = new ShapeRenderer();
 
-		blurTargetA = new FrameBuffer(Pixmap.Format.RGBA8888, FBO_SIZE, FBO_SIZE, false);
-		blurTargetB = new FrameBuffer(Pixmap.Format.RGBA8888, FBO_SIZE, FBO_SIZE, false);
+		blurTargetA = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		blurTargetB = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		fboRegion = new TextureRegion(blurTargetA.getColorBufferTexture());
 		fboRegion.flip(false, true);
 		blurAmount = 8f;
@@ -65,7 +72,7 @@ public class OrbRenderer implements OrbListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setShader(null);
-		resizeBatch(FBO_SIZE, FBO_SIZE);
+		//resizeBatch(FBO_SIZE, FBO_SIZE);
 		renderOrbs(OrbPart.Light);
 		blurTargetA.end();
 
@@ -80,13 +87,15 @@ public class OrbRenderer implements OrbListener {
 		batch.flush();
 		blurTargetB.end();
 
-		Gdx.gl.glClearColor(0.8f, 0.8f, 0.6f, 0f);
+		generateBackground(delta);
+
+		Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		batch.end();
 
-		renderOrbs(OrbPart.Dark);
+		//renderOrbs(OrbPart.Dark);
 
 		batch.begin();
 		blurShader.setUniformf("dir", 0f, 1f);
@@ -120,15 +129,19 @@ public class OrbRenderer implements OrbListener {
 		shapeRenderer.end();
 	}
 
-	private void resizeBatch(int width, int height) {
-		camera.setToOrtho(false, width, height);
-		batch.setProjectionMatrix(camera.combined);
-	}
-
 	private void updateOrbs(float delta) {
 		for (Orb orb : orbs) {
 			orb.update(delta);
 		}
+	}
+
+	private void generateBackground(float delta) {
+		//float x = Time.getTime() * backgroundColorSpeed;
+		backgroundColor.r = MathUtils.sin(Time.getTime() * backgroundColorSpeed * 0.8f) * 0.1f + 0.7f;
+		backgroundColor.g = MathUtils.sin(Time.getTime() * backgroundColorSpeed * 0.7f) * 0.1f + 0.7f;
+		backgroundColor.b = MathUtils.sin(Time.getTime() * backgroundColorSpeed * 0.9f) * 0.1f + 0.56f;
+
+		Gdx.app.log("LOG", String.valueOf(backgroundColor.r));
 	}
 
 	private void initializeShaders() {
@@ -167,7 +180,7 @@ public class OrbRenderer implements OrbListener {
 		touchPos.set(x, y, 0);
 		camera.unproject(touchPos);
 
-		Orb orb = new Orb(new Vector2(touchPos.x, touchPos.y), 10f, new Color(orbColor), this);
+		Orb orb = new Orb(new Vector2(touchPos.x, touchPos.y), 10f, new Color(0.4f, 0.6f, .09f, 1.0f), this);
 		orbs.add(orb);
 
 		Gdx.app.log("LOG", "Orb Spawned at: (" + touchPos.x + ", " + touchPos.y + ")!");

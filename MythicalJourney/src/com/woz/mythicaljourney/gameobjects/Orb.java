@@ -1,6 +1,7 @@
 package com.woz.mythicaljourney.gameobjects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /*
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Orb {
 	public final Color LIGHT_COLOR;
 	public final Color DARK_COLOR;
+	private final float brightnessScale;
 
 	public enum OrbPart {
 		Light,
@@ -40,8 +42,18 @@ public class Orb {
 		alpha = 1.0f;
 		fadeSpeed = 6f;
 
-		LIGHT_COLOR = new Color(0.4f, 0.8f, 0.9f, 1.0f);
-		DARK_COLOR = new Color(0.1f, 0.54f, 0.6f, 1.0f);
+		brightnessScale = 0.666666f;
+
+		LIGHT_COLOR = generateRandomColor(0.4f, 1.0f);
+		DARK_COLOR = new Color(LIGHT_COLOR.r * brightnessScale, LIGHT_COLOR.g * brightnessScale, LIGHT_COLOR.b * brightnessScale, 1.0f);
+	}
+
+	private Color generateRandomColor(float min, float max) {
+		float r = MathUtils.random(min, max);
+		float g = MathUtils.random(min, max);
+		float b = MathUtils.random(min, max);
+
+		return new Color(r, g, b, 1.0f);
 	}
 
 	public Vector2 getPosition() {
