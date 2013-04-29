@@ -1,4 +1,4 @@
-package com.woz.mythicaljourney.Screens;
+package com.woz.mythicaljourney.screens;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;

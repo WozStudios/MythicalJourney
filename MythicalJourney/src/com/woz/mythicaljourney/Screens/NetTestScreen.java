@@ -1,4 +1,4 @@
-package com.woz.mythicaljourney.Screens;
+package com.woz.mythicaljourney.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -10,7 +10,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.woz.mythicaljourney.MythicalJourneyGame;
 
 import java.io.IOException;

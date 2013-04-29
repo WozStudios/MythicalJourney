@@ -14,6 +14,5 @@ public class MainActivity extends AndroidApplication {
         cfg.useGL20 = true;
 
         initialize(new MythicalJourneyGame(), cfg);
-
     }
 }

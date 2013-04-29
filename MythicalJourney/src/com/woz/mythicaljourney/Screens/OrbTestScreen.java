@@ -1,11 +1,10 @@
-package com.woz.mythicaljourney.Screens;
+package com.woz.mythicaljourney.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.woz.mythicaljourney.MythicalJourneyGame;
 import com.woz.mythicaljourney.OrbRenderer;
 import com.woz.mythicaljourney.input.InputManager;

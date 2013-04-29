@@ -3,9 +3,9 @@ package com.woz.mythicaljourney;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.woz.mythicaljourney.Screens.NetTestScreen;
-import com.woz.mythicaljourney.Screens.OrbTestScreen;
+import com.woz.mythicaljourney.screens.OrbTestScreen;
 import com.woz.mythicaljourney.input.InputManager;
+import com.woz.mythicaljourney.screens.ShapeRendererAlphaTest;
 
 public class MythicalJourneyGame implements ApplicationListener {
 	private Screen screen;
