@@ -3,10 +3,8 @@ package com.woz.mythicaljourney;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.woz.mythicaljourney.Screens.OrbTestScreen;
+import com.woz.mythicaljourney.Screens.NetTestScreen;
 import com.woz.mythicaljourney.input.InputManager;
-import com.woz.mythicaljourney.input.UIInputProcessor;
 
 public class MythicalJourneyGame implements ApplicationListener {
 	private Screen screen;
@@ -15,7 +13,7 @@ public class MythicalJourneyGame implements ApplicationListener {
 	public void create() {
 		InputManager.setup();
 
-		screen = new OrbTestScreen(this);
+		screen = new NetTestScreen(this);
 
 		setScreen(screen);
 	}
