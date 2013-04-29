@@ -8,17 +8,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.woz.mythicaljourney.gameobjects.Orb;
+import com.woz.mythicaljourney.gameobjects.OrbListener;
 
 /*
  * User: Daniel
  * Date: 4/29/13
  * Time: 1:54 AM
  */
-public class OrbRenderer {
+public class OrbRenderer implements OrbListener {
 	private static final int FBO_SIZE = 1024;
 
 	private FrameBuffer blurTargetA;
@@ -59,7 +61,7 @@ public class OrbRenderer {
 		growthSpeed = 35f;
 
 		orbs = new Array<Orb>();
-		orb = new Orb(new Vector2(300, 400), orbRadius, lightBlue);
+		orb = new Orb(new Vector2(300, 400), orbRadius, lightBlue, this);
 		orbs.add(orb);
 
 		shapeRenderer = new ShapeRenderer();
@@ -76,7 +78,7 @@ public class OrbRenderer {
 	}
 
 	public void render(float delta) {
-		orb.setPosition(new Vector2(300, 300));
+		orb.setPosition(new Vector2(100, 300));
 
 		updateOrbRadius(delta);
 
@@ -144,17 +146,8 @@ public class OrbRenderer {
 	}
 
 	private void updateOrbRadius(float delta) {
-		orbRadius += growthSpeed * delta;
-
-		if (orbRadius > 100) {
-			if (orbs.size > 0) {
-				Gdx.app.log("LOG", "Orb killed");
-				orbs.removeIndex(0);
-			}
-		}
-
 		for (Orb orb : orbs) {
-			orb.setRadius(orbRadius);
+			orb.update(delta);
 		}
 	}
 
@@ -197,6 +190,18 @@ public class OrbRenderer {
 		touchPos.set(x, y, 0);
 		camera.unproject(touchPos);
 
+		Orb orb = new Orb(new Vector2(touchPos.x, touchPos.y), 10f, darkBlue, this);
+		orbs.add(orb);
+		//orb.setID(orbs.);
+
 		Gdx.app.log("LOG", "Orb Spawned at: (" + touchPos.x + ", " + touchPos.y + ")!");
+	}
+
+	@Override
+	public void notifyDead(Orb orb) {
+		if (orbs.removeValue(orb, true)) {
+			Gdx.app.log("LOG", "Orb killed");
+
+		}
 	}
 }

@@ -12,11 +12,19 @@ public class Orb {
 	private Vector2 position;
 	private float radius;
 	private Color color;
+	private float growthSpeed;
+	private float maxRadius;
+	private OrbListener orbListener;
+	private int ID;
 
-	public Orb(Vector2 position, float radius, Color color) {
+	public Orb(Vector2 position, float radius, Color color, OrbListener orbListener) {
 		this.position = position;
 		this.radius = radius;
 		this.color = color;
+		this.orbListener = orbListener;
+
+		growthSpeed = 35f;
+		maxRadius = 100f;
 	}
 
 	public Vector2 getPosition() {
@@ -54,4 +62,25 @@ public class Orb {
 		color.set(color.r, color.g, color.b, alpha);
 	}
 
+	public void update(float  delta) {
+		radius += growthSpeed * delta;
+
+		if (radius > maxRadius) {
+			die();
+		}
+	}
+
+	private void die() {
+		orbListener.notifyDead(this);
+
+		//TODO add fadeout to dying orbs
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int ID) {
+		this.ID = ID;
+	}
 }

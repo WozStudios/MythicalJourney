@@ -24,7 +24,6 @@ public class OrbTestScreen implements Screen {
 
 	private OrbRenderer orbRenderer;
 
-	private ShapeRenderer testRenderer;
 	public OrbTestScreen(MythicalJourneyGame game) {
 		this.game = game;
 
@@ -49,6 +48,9 @@ public class OrbTestScreen implements Screen {
 	public void render(float delta) {
 		orbRenderer.render(delta);
 
+		batch.begin();
+		fps.draw(batch, "FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()), 5, Gdx.graphics.getHeight()-5);
+		batch.end();
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class OrbTestScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-
+		fps.dispose();
 		orbRenderer.dispose();
 	}
 }
