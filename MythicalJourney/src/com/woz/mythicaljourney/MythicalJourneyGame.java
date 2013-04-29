@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.woz.mythicaljourney.Screens.NetTestScreen;
+import com.woz.mythicaljourney.Screens.OrbTestScreen;
 import com.woz.mythicaljourney.input.InputManager;
 
 public class MythicalJourneyGame implements ApplicationListener {
@@ -13,7 +14,7 @@ public class MythicalJourneyGame implements ApplicationListener {
 	public void create() {
 		InputManager.setup();
 
-		screen = new NetTestScreen(this);
+		screen = new OrbTestScreen(this);
 
 		setScreen(screen);
 	}

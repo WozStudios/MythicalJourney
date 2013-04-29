@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.mattdesl.lessons.ShaderLesson5;
 
 public class MainActivity extends AndroidApplication {
     @Override

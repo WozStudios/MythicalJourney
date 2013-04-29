@@ -2,16 +2,15 @@ package com.woz.mythicaljourney.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.woz.mythicaljourney.MythicalJourneyGame;
 import com.woz.mythicaljourney.gameobjects.Orb;
 
@@ -28,30 +27,45 @@ public class OrbTestScreen implements Screen {
 
 	private FrameBuffer blurTargetA;
 	private FrameBuffer blurTargetB;
-	private SpriteBatch spriteBatch;
+	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private BitmapFont fps;
 
 	private ShaderProgram blurShader;
-	private final int FBO_SIZE = 1024;
-	private final float MAX_BLUR = 2f;
+	private static final int FBO_SIZE = 1024;
+	private static final float MAX_BLUR = 8f;
 	private final TextureRegion fboRegion;
+	private float brightnessScale;
+	private final Color orbColor;
+	private float orbRadius;
+	private Array<Orb> orbs;
 
 	public OrbTestScreen(MythicalJourneyGame game) {
 		this.game = game;
 
-		orb = new Orb(new Vector2(300, 400), 100, new Color(0.3f, 0.7f, 0.8f, 1.0f));
+		orbs = new Array<Orb>();
+
+		orbColor = new Color(0.3f, 0.7f, 0.8f, 1.0f);
+		orbRadius = 100f;
+
+		orb = new Orb(new Vector2(300, 400), orbRadius, orbColor);
+
+		orbs.add(orb);
 
 		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setColor(0.3f, 0.7f, 0.8f, 1.0f);
+
+		initializeShaders();
 
 		blurTargetA = new FrameBuffer(Pixmap.Format.RGBA8888, FBO_SIZE, FBO_SIZE, false);
 		blurTargetB = new FrameBuffer(Pixmap.Format.RGBA8888, FBO_SIZE, FBO_SIZE, false);
 		fboRegion = new TextureRegion(blurTargetA.getColorBufferTexture());
 		fboRegion.flip(false, true);
 
-		spriteBatch = new SpriteBatch();
+		batch = new SpriteBatch();
 
-		initializeShaders();
+		brightnessScale = 2f;
+
+		fps = new BitmapFont();
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(false);
@@ -77,7 +91,7 @@ public class OrbTestScreen implements Screen {
 		blurShader.begin();
 		blurShader.setUniformf("dir", 0f, 0f);
 		blurShader.setUniformf("resolution", FBO_SIZE);
-		blurShader.setUniformf("radius", 1f);
+		blurShader.setUniformf("radius", MAX_BLUR);
 		blurShader.end();
 	}
 
@@ -88,80 +102,111 @@ public class OrbTestScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		updateOrbRadius(delta);
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+
 		//Start rendering to an offscreen color buffer
 		blurTargetA.begin();
 
 		//Clear the offscreen buffer with an opaque background
-		Gdx.gl.glClearColor(0.855f, 0.855f, 0.749f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1f);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		//before rendering, ensure we are using the default shader
-		spriteBatch.setShader(null);
+		batch.setShader(null);
 
 		//resize the batch projection matrix before drawing with it
 		resizeBatch(FBO_SIZE, FBO_SIZE);
 
-		//now we can start drawing...
-
-		//draw our scene here
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.circle(orb.getPosition().x, orb.getPosition().y, orb.getRadius());
-		shapeRenderer.end();
+		renderOrb();
 
 		//finish rendering to the offscreen buffer
 		blurTargetA.end();
 
-		//now let's start blurring the offscreen image
-		spriteBatch.setShader(blurShader);
+		//our first blur pass goes to target B
+		blurTargetB.begin();
 
-		spriteBatch.begin();
+		//now let's start blurring the offscreen image
+		batch.setShader(blurShader);
+
+		batch.begin();
 
 		//ensure the direction is along the X-axis only
 		blurShader.setUniformf("dir", 1f, 0f);
-
-		//update blur amount based on touch input
-		float mouseXAmt = Gdx.input.getX() / (float)Gdx.graphics.getWidth();
-		blurShader.setUniformf("radius", mouseXAmt * MAX_BLUR);
-
-		//our first blur pass goes to target B
-		blurTargetB.begin();
 
 		//we want to render FBO target A into target B
 		fboRegion.setTexture(blurTargetA.getColorBufferTexture());
 
 		//draw the scene to target B with a horizontal blur effect
-		spriteBatch.draw(fboRegion, 0, 0);
+
+		batch.enableBlending();
+		batch.draw(fboRegion, 0, 0);
 
 		//flush the batch before ending the FBO
-		spriteBatch.flush();
+		batch.flush();
 
 		//finish rendering target B
 		blurTargetB.end();
 
 		//now we can render to the screen using the vertical blur shader
 
+		Gdx.gl.glClearColor(0.8f, 0.8f, 0.6f, 0f);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+
 		//update our projection matrix with the screen size
 		resizeBatch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		batch.end();
+
+
+		orb.setRadius(300);
+		//renderOrb();
+
+		orb.setRadius(100);
+		orb.setColor(orbColor);
+		shapeRenderer.setColor(orbColor);
+
+		//renderOrb();
+
+		batch.begin();
 
 		//update the blur only along Y-axis
 		blurShader.setUniformf("dir", 0f, 1f);
 
-		//update the Y-axis blur radius
-		float mouseYAmt = Gdx.input.getY() / (float)Gdx.graphics.getHeight();
-		blurShader.setUniformf("radius", mouseYAmt * MAX_BLUR);
-
 		//draw target B to the screen with a vertical blur effect
 		fboRegion.setTexture(blurTargetB.getColorBufferTexture());
-		spriteBatch.draw(fboRegion, 0, 0);
+
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+		batch.enableBlending();
+		batch.draw(fboRegion, 0, 0);
+		batch.disableBlending();
 
 		//reset to default shader without blurs
-		spriteBatch.setShader(null);
+		batch.setShader(null);
 
 		//draw FPS
-		//fps.draw(spriteBatch, String.valueOf(Gdx.graphics.getFramesPerSecond()), 5, Gdx.graphics.getHeight()-5);
+		fps.draw(batch, String.valueOf(Gdx.graphics.getFramesPerSecond()), 5, Gdx.graphics.getHeight()-5);
 
 		//finally, end the batch since we have reached the end of the frame
-		spriteBatch.end();
+		batch.end();
+	}
+
+	private void updateOrbRadius(float delta) {
+		orbRadius -= 10f * delta;
+
+		if (orbRadius < 10) {
+			if (orbs.size > 0) {
+				Gdx.app.log("LOG", "Orb killed");
+				orbs.removeIndex(0);
+			}
+		}
+
+		for (Orb orb : orbs) {
+			orb.setRadius(orbRadius);
+		}
 	}
 
 	@Override
@@ -170,7 +215,19 @@ public class OrbTestScreen implements Screen {
 
 	private void resizeBatch(int width, int height) {
 		camera.setToOrtho(false, width, height);
-		spriteBatch.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
+	}
+
+
+	private void renderOrb() {
+		shapeRenderer.setColor(orb.getColor());
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		for (Orb orb : orbs) {
+			shapeRenderer.circle(orb.getPosition().x, orb.getPosition().y, orb.getRadius());
+		}
+		shapeRenderer.end();
 	}
 
 	@Override
@@ -190,7 +247,7 @@ public class OrbTestScreen implements Screen {
 		shapeRenderer.dispose();
 		blurTargetA.dispose();
 		blurTargetB.dispose();
-		spriteBatch.dispose();
+		batch.dispose();
 		blurShader.dispose();
 	}
 }

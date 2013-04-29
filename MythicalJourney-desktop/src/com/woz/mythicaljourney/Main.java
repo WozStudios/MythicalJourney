@@ -12,6 +12,5 @@ public class Main {
 		cfg.height = 720;
 		
 		new LwjglApplication(new MythicalJourneyGame(), cfg);
-
 	}
 }
